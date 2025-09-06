@@ -18,15 +18,22 @@
   },
   "dependencies": {
     "@docusaurus/core": "latest",
+    "@docusaurus/plugin-pwa": "^3.8.1",
     "@docusaurus/preset-classic": "latest",
     "@easyops-cn/docusaurus-search-local": "latest",
+    "@react-three/drei": "^10.7.4",
+    "@react-three/fiber": "^9.3.0",
     "framer-motion": "latest",
+    "fuse.js": "^7.1.0",
     "plotly.js-dist-min": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-hotkeys-hook": "^5.1.0",
     "react-plotly.js": "latest",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "three": "^0.180.0",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@axe-core/puppeteer": "^4.8.2",

@@ -1,0 +1,100 @@
+/* src/css/layout.css */
+
+/* content grid: sidebar + main + optional right panel */
+.site-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 340px; /* left nav, main, right tools */
+  gap: 2rem;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* collapse right panel on small screens, keep main full-width */
+@media (max-width: 1100px) {
+  .site-layout {
+    grid-template-columns: 240px 1fr;
+    gap: 1rem;
+  }
+}
+@media (max-width: 800px) {
+  .site-layout {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+/* Sticky sidebar and right panel */
+.sidebar {
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow: auto;
+  padding-right: 0.5rem;
+}
+
+.right-panel {
+  position: sticky;
+  top: 1.5rem;
+  height: calc(100vh - 3rem);
+  overflow: auto;
+  padding-left: 0.5rem;
+}
+
+/* Plot wrapper styling */
+.plot-wrapper { 
+  min-height: 220px; 
+  position: relative;
+}
+
+/* Plot modal styling */
+.plot-modal {
+  position: fixed; 
+  inset: 0; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  z-index: 99999;
+  background: rgba(2, 6, 23, 0.75);
+}
+
+.plot-modal-inner { 
+  width: 92%; 
+  height: 86%; 
+  background: #001022; 
+  padding: 1rem; 
+  border-radius: 10px; 
+  position: relative; 
+}
+
+.plot-modal-close { 
+  position: absolute; 
+  right: 12px; 
+  top: 12px; 
+  background: transparent; 
+  border: 0; 
+  color: #fff; 
+  font-size: 22px; 
+  cursor: pointer;
+}
+
+.plot-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* SideBySide responsive behavior */
+.side-by-side {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 480px;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1100px) {
+  .side-by-side {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}

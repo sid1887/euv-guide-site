@@ -18,7 +18,15 @@ export default {
       "tagName": "link",
       "attributes": {
         "rel": "preconnect",
-        "href": "https://fonts.gstatic.com"
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": "anonymous"
+      }
+    },
+    {
+      "tagName": "link",
+      "attributes": {
+        "rel": "preconnect",
+        "href": "https://fonts.googleapis.com"
       }
     },
     {
@@ -87,12 +95,46 @@ export default {
   "themes": [
     "@easyops-cn/docusaurus-search-local"
   ],
+  "plugins": [
+    [
+      "@docusaurus/plugin-pwa",
+      {
+        "debug": false,
+        "offlineModeActivationStrategies": [
+          "appInstalled",
+          "standalone",
+          "queryString"
+        ],
+        "pwaHead": [
+          {
+            "tagName": "link",
+            "rel": "icon",
+            "href": "/img/favicon.png"
+          },
+          {
+            "tagName": "meta",
+            "name": "theme-color",
+            "content": "#071021"
+          },
+          {
+            "tagName": "link",
+            "rel": "manifest",
+            "href": "/manifest.json"
+          }
+        ]
+      }
+    ]
+  ],
   "stylesheets": [
     {
       "href": "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
       "type": "text/css",
       "integrity": "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
       "crossorigin": "anonymous"
+    },
+    {
+      "href": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap",
+      "type": "text/css"
     }
   ],
   "baseUrlIssueBanner": true,
@@ -131,7 +173,6 @@ export default {
     "static"
   ],
   "customFields": {},
-  "plugins": [],
   "themeConfig": {
     "colorMode": {
       "defaultMode": "light",

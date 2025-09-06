@@ -48,38 +48,26 @@
       "plugin": "plugin---search-138-688"
     }
   },
-  "/docs-cfa": {
+  "/docs-6b9": {
     "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
       "plugin": "plugin---docsaba-d7c"
     }
   },
-  "/docs-37a": {
+  "/docs-8c5": {
     "__comp": "__comp---theme-doc-version-roota-7-b-5de",
     "__props": "__props---docs-005-788"
   },
-  "/docs-083": {
+  "/docs-2e2": {
     "__comp": "__comp---theme-doc-roota-94-67a"
-  },
-  "/docs/chapters/intro-6c4": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-chapters-intro-129-353"
   },
   "/docs/chapters/intro-e8b": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-chapters-introbc-4-34f"
   },
-  "/docs/chapters/photolithography-basics-7f6": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-chapters-photolithography-basicsefc-d5d"
-  },
   "/docs/chapters/photolithography-basics-88e": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-chapters-photolithography-basics-884-244"
-  },
-  "/docs/chapters/why-euv-rayleigh-0bc": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-chapters-why-euv-rayleigh-05-e-703"
   },
   "/docs/chapters/why-euv-rayleigh-f4b": {
     "__comp": "__comp---theme-doc-item-178-a40",

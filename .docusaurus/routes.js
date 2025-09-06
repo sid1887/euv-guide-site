@@ -44,22 +44,16 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', 'cfa'),
+    component: ComponentCreator('/docs', '6b9'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', '37a'),
+        component: ComponentCreator('/docs', '8c5'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', '083'),
+            component: ComponentCreator('/docs', '2e2'),
             routes: [
-              {
-                path: '/docs/chapters/intro',
-                component: ComponentCreator('/docs/chapters/intro', '6c4'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
               {
                 path: '/docs/chapters/intro',
                 component: ComponentCreator('/docs/chapters/intro', 'e8b'),
@@ -68,19 +62,7 @@ export default [
               },
               {
                 path: '/docs/chapters/photolithography-basics',
-                component: ComponentCreator('/docs/chapters/photolithography-basics', '7f6'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
-              {
-                path: '/docs/chapters/photolithography-basics',
                 component: ComponentCreator('/docs/chapters/photolithography-basics', '88e'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
-              {
-                path: '/docs/chapters/why-euv-rayleigh',
-                component: ComponentCreator('/docs/chapters/why-euv-rayleigh', '0bc'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
