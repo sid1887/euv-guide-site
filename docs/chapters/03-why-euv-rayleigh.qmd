@@ -1,0 +1,71 @@
+---
+title: "3 — Why EUV Is Needed: Wavelength, NA, and Rayleigh"
+---
+
+Smaller wavelength and larger numerical aperture (NA) mean smaller printed features. This is captured by Rayleigh’s criterion:
+
+$$ CD = k_1 \cdot \frac{\lambda}{NA} $$
+
+EUV reduces wavelength from 193 nm to 13.5 nm while High-NA increases NA, both improving CD per Rayleigh and reducing multi-patterning burdens [@Pease2007; @ASML_HighNA].
+
+### Marker-Tip Analogy
+Shorter wavelengths are like finer marker tips — you can draw thinner lines.
+
+```{mermaid}
+flowchart TB
+  A[Thick marker tip\n(long \n\(\lambda\))] -->|Thick line| L1(( ))
+  B[Fine marker tip\n(short \n\(\lambda\))] -->|Thin line| L2(( ))
+```
+
+### CD vs NA (EUV vs DUV)
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CD = 0.35 * lambda / NA for two wavelengths",
+  "data": {
+    "values": [
+      {"na": 0.25, "lambda": 193, "type": "DUV (193 nm)"},
+      {"na": 0.33, "lambda": 193, "type": "DUV (193 nm)"},
+      {"na": 0.55, "lambda": 193, "type": "DUV (193 nm)"},
+      {"na": 0.25, "lambda": 13.5, "type": "EUV (13.5 nm)"},
+      {"na": 0.33, "lambda": 13.5, "type": "EUV (13.5 nm)"},
+      {"na": 0.55, "lambda": 13.5, "type": "EUV (13.5 nm)"}
+    ]
+  },
+  "transform": [
+    {"calculate": "0.35 * datum.lambda / datum.na", "as": "cd"}
+  ],
+  "mark": {"type": "line", "point": true},
+  "encoding": {
+    "x": {"field": "na", "type": "quantitative", "title": "NA"},
+    "y": {"field": "cd", "type": "quantitative", "title": "CD (nm)"},
+    "color": {"field": "type", "type": "nominal"}
+  }
+}
+```
+
+:::{.callout-note}
+### Notes on Parameters
+- Typical process factor: k₁ ≈ 0.3–0.4  
+- EUV wavelength: λ = 13.5 nm  
+- Production NA values: 0.33 (today), 0.55 (High-NA)
+:::
+
+:::{.callout-tip}
+### Takeaway
+Moving from 193 nm DUV to 13.5 nm EUV — and increasing NA — is how we keep printing at the nanoscale.
+:::
+
+### What is k₁ and why isn’t it zero?
+The factor k₁ accounts for process/optical constraints like coherence, illumination shape, mask topology, and resist behavior. Typical values are ~0.3–0.4 in production. Advanced computational lithography can push it lower, but not to zero.
+
+### Practical NA Ranges
+
+| Technology | NA (typical) | Notes |
+|---|---:|---|
+| DUV immersion | 1.35 | Water immersion; 193 nm |
+| EUV (current) | 0.33 | 13.5 nm; 4× reduction |
+| High-NA EUV | 0.55 | 13.5 nm; anamorphic optics |
+
+### Beyond Rayleigh
+Even with the same CD by Rayleigh, stochastic effects (photon shot noise, secondary electrons) and resist limitations can dominate. Dose, illumination, and pattern layout co-optimization are crucial.

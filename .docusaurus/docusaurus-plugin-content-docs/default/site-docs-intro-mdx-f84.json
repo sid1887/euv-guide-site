@@ -1,0 +1,22 @@
+{
+  "id": "intro",
+  "title": "Welcome to EUV Lithography Guide",
+  "description": "This site is built with Docusaurus, using MDX (Markdown + React) to provide an accessible, interactive learning experience for next-generation semiconductor manufacturing.",
+  "source": "@site/docs/intro.mdx",
+  "sourceDirName": ".",
+  "slug": "/intro",
+  "permalink": "/docs/intro",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "next": {
+    "title": "1 — Introduction: Why Microchips Matter",
+    "permalink": "/docs/chapters/intro"
+  }
+}

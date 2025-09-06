@@ -1,0 +1,33 @@
+---
+title: "9 — Process Integration: Layer-by-Layer Chip Build"
+---
+
+Chips are built by repeating pattern-transfer cycles across dozens to ~100 layers: transistors, contacts/vias, lower metals, and upper metals. EUV is used for the smallest, tight-pitch layers; DUV handles larger features cost-effectively.
+
+```{mermaid}
+flowchart LR
+  A[Coat] --> B[Align] --> C[Expose] --> D[Develop] --> E[Etch/Depo] --> F[Strip/Clean]
+  F -->|Repeat| A
+```
+
+:::{.callout-tip}
+### Takeaway
+Manufacturing is iterative: a thousand precise steps over months transform bare wafers into fully wired systems.
+:::
+
+### Layer Stack Overview
+```{mermaid}
+flowchart TB
+  T[Transistor layers] --> C[Contacts/Vias]
+  C --> M1[Lower metals (M1–M4)]
+  M1 --> MU[Upper metals (M5+)]
+  MU --> P[Pads / Top metal]
+```
+
+### EUV vs DUV Placement
+- EUV: smallest pitches (e.g., cuts, via layers, lower metals)
+- DUV: larger-pitch routing, power distribution, top layers
+
+### Cycle Control
+- Critical dimension (CD) uniformity and overlay are tracked every layer
+- In-line metrology feeds back to exposure, focus, and etch recipes

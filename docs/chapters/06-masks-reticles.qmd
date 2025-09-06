@@ -1,0 +1,34 @@
+---
+title: "6 — Masks and Reticle Handling"
+---
+
+EUV masks are reflective multilayer mirrors with absorber patterns, typically 4× larger than the wafer image and reduced in projection.
+
+:::{.callout-note}
+### What is a Photomask?
+A precision master carrying circuit patterns. EUV masks use Mo/Si multilayers with a Ru cap and a tantalum-based absorber to block EUV locally.
+:::
+
+```{mermaid}
+flowchart LR
+  S[Substrate (ULE)] --> ML[Mo/Si Multilayer (~70% R)] --> RU[Ru capping layer] --> TA[Absorber (Ta-based)]
+```
+
+![](../images/photomask_closeup.png){#fig:mask-close fig-alt="Close-up of EUV reflective mask surface" fig-cap="EUV reflective mask with absorber features." fig-credit="Microscope photo (placeholder)" width="80%"}
+
+:::{.callout-tip}
+### Takeaway
+Mask perfection is crucial: any defect replicates across all chips on a wafer.
+:::
+
+### Pellicles and Contamination
+EUV pellicles are ultra-thin membranes that keep particles off the mask surface during exposure. They must be transparent at 13.5 nm yet mechanically robust and thermally stable.
+
+### Absorber Choices and Edge Profiles
+Tantalum-based absorbers offer good EUV absorption. Edge profiles and sidewall angles impact imaging due to shadowing and phase effects; computational OPC corrects for these.
+
+| Topic | Note |
+|---|---|
+| Inspection | Actinic inspection at 13.5 nm is ideal but challenging |
+| Repair | Focused ion beam and localized deposition techniques |
+| Cleaning | Plasma and chemical methods must preserve multilayers |

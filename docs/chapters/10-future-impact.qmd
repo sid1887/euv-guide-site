@@ -1,0 +1,69 @@
+---
+title: "10 — Future: High-NA EUV, Sustainability, and Impact"
+---
+
+High-NA EUV (NA ~0.55) improves resolution (~8 nm half-pitch) and may reduce multi-patterning. It introduces anamorphic imaging and tighter tolerances.
+
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"values": [
+    {"tool": "DUV", "power": 130},
+    {"tool": "EUV", "power": 1100}
+  ]},
+  "mark": {"type": "bar", "cornerRadius": 3},
+  "encoding": {
+    "x": {"field": "tool", "type": "nominal", "title": null},
+    "y": {"field": "power", "type": "quantitative", "title": "Approx. Power (kW)"},
+    "color": {"field": "tool", "type": "nominal"}
+  }
+}
+```
+
+:::{.callout-note}
+### Sustainability Levers
+- More efficient light sources  
+- Improved mirror reflectivity  
+- Thermal management and waste heat recovery  
+- Lifecycle analysis to reduce environmental footprint
+:::
+
+:::{.callout-tip}
+### Takeaway
+High-NA EUV extends Moore’s Law as the industry pushes for greener, more efficient manufacturing.
+:::
+
+### Throughput and Economics
+Next-gen tools target >185 wafers/hour. Higher throughput offsets dose needs and process overheads; better source power and collector efficiency are central to this.
+
+#### Interactive: Chips per Day (Illustrative)
+Assumptions: 300 mm wafers, perfect packing estimate using wafer area ≈ 70,685 mm², simple loss factor 0.82 for edge and scribe.
+
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "../data/throughput_grid.csv"},
+  "transform": [
+    {"calculate": "datum.utilization_percent/100", "as": "util"},
+    {"calculate": "70685 * 0.82 / datum.die_area_mm2", "as": "dies_per_wafer"},
+    {"calculate": "datum.wafers_per_hour * 24 * datum.util/1000", "as": "k_wafers_per_day"},
+    {"calculate": "datum.wafers_per_hour * 24 * datum.util * (70685 * 0.82 / datum.die_area_mm2)", "as": "chips_per_day"}
+  ],
+  "mark": {"type": "point", "filled": true, "size": 120},
+  "encoding": {
+    "x": {"field": "die_area_mm2", "type": "quantitative", "title": "Die area (mm²)"},
+    "y": {"field": "chips_per_day", "type": "quantitative", "title": "Chips per day (illustrative)"},
+    "color": {"field": "wafers_per_hour", "type": "nominal", "title": "Wafers/hour"},
+    "shape": {"field": "utilization_percent", "type": "nominal", "title": "Utilization %"},
+    "tooltip": [
+      {"field": "wafers_per_hour"},
+      {"field": "die_area_mm2"},
+      {"field": "utilization_percent"},
+      {"field": "chips_per_day", "type": "quantitative", "format": ".2f"}
+    ]
+  }
+}
+```
+
+### Industry Ecosystem
+System integrators, optics leaders, laser-source specialists, and materials suppliers co-develop key subsystems (optics, sources, masks, resists, metrology).

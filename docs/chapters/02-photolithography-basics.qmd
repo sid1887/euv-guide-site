@@ -1,0 +1,67 @@
+---
+title: "2 — Photolithography Basics (Analogy-Driven)"
+---
+
+Photolithography is like projecting a stencil onto photosensitive paint. A mask carries the pattern; optics image it onto photoresist on the wafer; development reveals the pattern; etch transfers it into materials.
+
+:::{.callout-note}
+### Definition: Photoresist
+A polymer film that changes solubility when exposed to light. Positive resists become more soluble where exposed; negative resists become less soluble.
+:::
+
+### The Lithography Cycle
+```{mermaid}
+flowchart LR
+  A[Coat resist] --> B[Align]
+  B --> C[Expose (mask + optics)]
+  C --> D[Develop]
+  D --> E[Etch / Deposition]
+  E --> F[Strip / Clean]
+```
+
+### Mask to Wafer Imaging (Cartoon)
+```{mermaid}
+flowchart LR
+  M[Mask/Reticle\n(4x pattern)] -->|13.5 nm light| O([Projection Optics])
+  O --> W[Wafer with Photoresist\n(1x image)]
+```
+
+:::{.callout-tip}
+### Takeaway
+Photolithography turns circuit blueprints into physical nanostructures using light and chemistry, one layer at a time.
+:::
+
+### Step Types and Modes
+- Steppers vs Scanners: Scanners sweep the slit image over the wafer for higher throughput and better imaging control.
+- Exposure dose: Energy per unit area on resist (e.g., 20–50 mJ/cm² for EUV). Too low and features won’t form; too high and they blur.
+- Focus/exposure matrix (FEM): Process windows are characterized by sweeping focus and dose to map printability.
+
+### Overlay and Alignment
+Overlay is the alignment between layers — typically controlled to a few nanometers. Alignment marks are measured by metrology optics; corrections are applied by the stage and optics.
+
+```{mermaid}
+flowchart LR
+  AM[Alignment marks] --> M[Metrology system]
+  M --> C[Compute corrections]
+  C --> S[Stage motion + focus/tilt]
+```
+
+### Wafer Shot Map (Illustrative)
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"values": [
+    {"x": 1, "y": 1}, {"x": 2, "y": 1}, {"x": 3, "y": 1},
+    {"x": 1, "y": 2}, {"x": 2, "y": 2}, {"x": 3, "y": 2},
+    {"x": 1, "y": 3}, {"x": 2, "y": 3}
+  ]},
+  "mark": {"type": "rect"},
+  "encoding": {
+    "x": {"field": "x", "type": "ordinal", "axis": null},
+    "y": {"field": "y", "type": "ordinal", "axis": null},
+    "color": {"value": "#6C63FF"}
+  },
+  "width": 240,
+  "height": 240
+}
+```

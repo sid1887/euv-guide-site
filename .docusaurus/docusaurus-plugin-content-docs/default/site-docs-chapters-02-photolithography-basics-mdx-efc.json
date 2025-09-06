@@ -1,0 +1,24 @@
+{
+  "id": "chapters/photolithography-basics",
+  "title": "photolithography-basics",
+  "description": "",
+  "source": "@site/docs/chapters/02-photolithography-basics.mdx",
+  "sourceDirName": "chapters",
+  "slug": "/chapters/photolithography-basics",
+  "permalink": "/docs/chapters/photolithography-basics",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "1 — Introduction: Why Microchips Matter",
+    "permalink": "/docs/chapters/intro"
+  },
+  "next": {
+    "title": "3 — Why EUV? The Rayleigh Criterion",
+    "permalink": "/docs/chapters/why-euv-rayleigh"
+  }
+}

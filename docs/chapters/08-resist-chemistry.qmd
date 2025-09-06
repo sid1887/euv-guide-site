@@ -1,0 +1,320 @@
+---
+title: "8 — Photoresist Chemistry: From Photons to Solubility"
+execute:
+  echo: false
+  warning: false
+---
+
+EUV photons (~92 eV) create energetic electrons in the resist that drive multiple reactions: bond scission, acid generation, cross-linking, and polymer modification [@Kinoshita2009]. Stochasticity from few-photon doses leads to variability like line-edge roughness (LER), representing one of the fundamental challenges in EUV lithography [@Itani2013].
+
+```{mermaid}
+flowchart LR
+  P[EUV photon (13.5 nm)] --> E[Photoelectron + secondary e-]
+  E --> C[Chemistry: acid, scission, cross-link]
+  C --> S[Solubility change]
+```
+
+:::{.callout-note}
+### Metal-oxide resists (MOR)
+Metal-containing molecules (e.g., Hf, Zr, Sn) that absorb EUV efficiently and can improve sensitivity and etch resistance.
+:::
+
+![](../images/resist_molecules_micrograph.png){#fig:resist-micro fig-alt="Micrograph or illustration of resist film and molecules" fig-cap="Resist film and molecular structure (illustrative)." fig-credit="Placeholder image" width="80%"}
+
+:::{.callout-tip}
+### Takeaway
+In EUV resists, electrons do much of the chemistry. Managing stochasticity is central to pushing resolution and uniformity.
+:::
+
+### Advanced Resist Chemistry Analysis
+
+The fundamental chemistry of EUV resists involves complex electron-driven processes [@Wallow2008]. Let's explore the relationships between dose, resist type, and performance metrics:
+
+```{python}
+#| label: resist-performance
+#| fig-cap: "Comprehensive resist performance analysis showing trade-offs between sensitivity, resolution, and line edge roughness"
+
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
+
+# Load resist performance data
+resist_data = pd.read_csv('../data/resist_performance.csv')
+
+# Create comprehensive resist analysis
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('Sensitivity vs Resolution', 'LER Performance Comparison',
+                   'Etch Resistance vs Cost', 'Technology Maturity Assessment'),
+    specs=[[{"secondary_y": False}, {"secondary_y": False}],
+           [{"secondary_y": True}, {"type": "scatter"}]]
+)
+
+# Sensitivity vs Resolution scatter plot
+fig.add_trace(
+    go.Scatter(
+        x=resist_data['sensitivity_mj_cm2'],
+        y=resist_data['resolution_nm'],
+        mode='markers+text',
+        text=resist_data['resist_type'],
+        textposition='top center',
+        marker=dict(
+            size=resist_data['ler_nm']*5,  # Size represents LER
+            color=resist_data['cost_relative'],
+            colorscale='RdYlBu_r',
+            showscale=True,
+            colorbar=dict(title="Relative Cost", x=0.45)
+        ),
+        name='Resist Types',
+        hovertemplate='<b>%{text}</b><br>Sensitivity: %{x} mJ/cm²<br>Resolution: %{y} nm<br>LER: %{marker.size/5:.1f} nm<extra></extra>'
+    ),
+    row=1, col=1
+)
+
+# LER comparison bar chart
+fig.add_trace(
+    go.Bar(
+        x=resist_data['resist_type'],
+        y=resist_data['ler_nm'],
+        marker_color=resist_data['ler_nm'],
+        marker_colorscale='RdYlGn_r',
+        name='LER Performance',
+        showlegend=False
+    ),
+    row=1, col=2
+)
+
+# Etch resistance vs cost
+etch_resistance_numeric = resist_data['etch_resistance'].map({
+    'Fair': 1, 'Good': 2, 'Very_Good': 3, 'Excellent': 4
+})
+
+fig.add_trace(
+    go.Scatter(
+        x=resist_data['cost_relative'],
+        y=etch_resistance_numeric,
+        mode='markers+text',
+        text=resist_data['resist_type'],
+        textposition='middle right',
+        marker=dict(size=12, color='blue'),
+        name='Etch vs Cost'
+    ),
+    row=2, col=1
+)
+
+# Technology maturity radar-like plot
+maturity_levels = resist_data['maturity_level'].value_counts()
+fig.add_trace(
+    go.Scatter(
+        x=list(range(len(maturity_levels))),
+        y=maturity_levels.values,
+        mode='markers+lines',
+        fill='toself',
+        name='Maturity Distribution',
+        marker=dict(size=10)
+    ),
+    row=2, col=2
+)
+
+# Update axes labels
+fig.update_xaxes(title_text="Sensitivity (mJ/cm²)", row=1, col=1)
+fig.update_yaxes(title_text="Resolution (nm)", row=1, col=1)
+
+fig.update_xaxes(title_text="Resist Type", row=1, col=2)
+fig.update_yaxes(title_text="LER (nm)", row=1, col=2)
+
+fig.update_xaxes(title_text="Relative Cost", row=2, col=1)
+fig.update_yaxes(title_text="Etch Resistance", row=2, col=1)
+
+fig.update_xaxes(title_text="Maturity Stage", row=2, col=2)
+fig.update_yaxes(title_text="Number of Resist Types", row=2, col=2)
+
+fig.update_layout(height=800, title_text="EUV Resist Performance Landscape")
+fig.show()
+```
+
+### Dose, Stochastics, and LER Analysis
+
+Because EUV doses can be low (tens of mJ/cm²), the number of photons per feature is limited — shot noise becomes significant [@Naulleau2009]. Secondary electron ranges (a few nm) blur where chemistry occurs, leading to fundamental trade-offs:
+
+```{python}
+#| label: stochastic-analysis
+#| fig-cap: "Stochastic effects in EUV lithography showing the relationship between dose, feature size, and variability"
+
+# Generate stochastic modeling data
+doses = np.linspace(10, 60, 100)
+feature_sizes = [16, 20, 24, 28]  # nm
+
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(14, 10))
+
+# LER vs Dose for different feature sizes
+for feature_size in feature_sizes:
+    # Stochastic model: LER decreases with sqrt(dose) but increases for smaller features
+    ler = (3.0 + 20/feature_size) / np.sqrt(doses/20) + 0.5 + 0.1*np.random.randn(len(doses))
+    ax1.plot(doses, ler, 'o-', label=f'{feature_size} nm features', alpha=0.7)
+
+ax1.set_xlabel('Dose (mJ/cm²)')
+ax1.set_ylabel('LER (nm)')
+ax1.set_title('Line Edge Roughness vs Dose')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Photon shot noise
+photon_density = doses * 1e15 / (6.626e-34 * 3e8 / 13.5e-9)  # photons/cm²
+feature_area = np.pi * (np.array(feature_sizes)/2e7)**2  # cm²
+
+for i, feature_size in enumerate(feature_sizes):
+    photons_per_feature = photon_density * feature_area[i]
+    shot_noise = 1/np.sqrt(photons_per_feature) * 100  # Percentage
+    ax2.semilogy(doses, shot_noise, 'o-', label=f'{feature_size} nm features')
+
+ax2.set_xlabel('Dose (mJ/cm²)')
+ax2.set_ylabel('Shot Noise (%)')
+ax2.set_title('Photon Shot Noise vs Dose')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+# Critical dimension uniformity
+cd_uniformity = []
+for dose in doses:
+    # Model: better uniformity with higher dose, but material limits
+    uniformity = 2.0 + 3.0 * np.exp(-dose/25) + 0.1*np.random.randn()
+    cd_uniformity.append(max(uniformity, 1.0))
+
+ax3.plot(doses, cd_uniformity, 'ro-', alpha=0.7)
+ax3.set_xlabel('Dose (mJ/cm²)')
+ax3.set_ylabel('CD Uniformity (3σ, nm)')
+ax3.set_title('Critical Dimension Uniformity')
+ax3.grid(True, alpha=0.3)
+
+# Process window analysis
+dose_grid, focus_grid = np.meshgrid(np.linspace(15, 45, 30), np.linspace(-50, 50, 30))
+# Process window model: Gaussian centered at optimal dose/focus
+process_window = np.exp(-((dose_grid - 30)**2/100 + (focus_grid)**2/400))
+
+im = ax4.contourf(dose_grid, focus_grid, process_window, levels=20, cmap='RdYlGn')
+ax4.set_xlabel('Dose (mJ/cm²)')
+ax4.set_ylabel('Focus (nm)')
+ax4.set_title('Process Window')
+plt.colorbar(im, ax=ax4, label='Process Margin')
+
+plt.tight_layout()
+plt.show()
+```
+
+### Metal-Oxide Resists (MOR) Deep Dive
+
+Metal-containing molecules (e.g., Hf, Zr, Sn) that absorb EUV efficiently and can improve sensitivity and etch resistance [@Meiling2020]:
+
+```{python}
+#| label: mor-analysis
+#| fig-cap: "Metal-oxide resist performance comparison showing advantages in sensitivity and etch resistance"
+
+# MOR vs traditional resist comparison
+resist_types = ['CAR Standard', 'CAR Advanced', 'Metal Oxide (Hf)', 'Metal Oxide (Zr)', 'Molecular Glass']
+sensitivity = [25, 22, 12, 15, 18]  # mJ/cm²
+etch_resistance = [2.5, 3.0, 4.5, 4.2, 2.8]  # Relative scale
+absorption = [0.04, 0.05, 0.12, 0.10, 0.06]  # μm⁻¹
+
+fig = go.Figure()
+
+# Create bubble chart
+fig.add_trace(go.Scatter(
+    x=sensitivity,
+    y=etch_resistance,
+    mode='markers+text',
+    text=resist_types,
+    textposition='top center',
+    marker=dict(
+        size=[a*500 for a in absorption],  # Size represents absorption
+        color=['red', 'orange', 'green', 'lightgreen', 'blue'],
+        opacity=0.7,
+        line=dict(width=2, color='black')
+    ),
+    name='Resist Performance',
+    hovertemplate='<b>%{text}</b><br>Sensitivity: %{x} mJ/cm²<br>Etch Resistance: %{y}<br>Absorption: %{marker.size/500:.3f} μm⁻¹<extra></extra>'
+))
+
+fig.update_layout(
+    title='EUV Resist Performance Comparison',
+    xaxis_title='Sensitivity (mJ/cm²) - Lower is Better',
+    yaxis_title='Etch Resistance (Relative)',
+    width=800,
+    height=600,
+    annotations=[
+        dict(
+            x=12, y=4.5,
+            text="Metal-oxide resists<br>show superior performance",
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor="green",
+            bgcolor="lightgreen",
+            opacity=0.8
+        )
+    ]
+)
+
+fig.show()
+```
+
+### Chemical Reaction Mechanisms
+
+The EUV-induced chemistry involves multiple pathways [@Kinoshita2009]:
+
+1. **Primary photoionization**: EUV photon creates photoelectron
+2. **Secondary electron cascade**: High-energy electrons create more electrons
+3. **Chemical amplification**: Acid-catalyzed reactions multiply the initial signal
+4. **Polymer modification**: Cross-linking or chain scission changes solubility
+
+```{python}
+#| label: reaction-kinetics
+#| fig-cap: "Chemical reaction kinetics in EUV resists showing the time evolution of different species"
+
+# Simulate chemical reaction kinetics
+time = np.linspace(0, 100, 1000)  # seconds
+
+# Initial concentrations (normalized)
+photoacid_generator = np.exp(-time/20)  # PAG consumption
+acid_concentration = 1 - np.exp(-time/20)  # Acid generation
+polymer_reaction = 1 - np.exp(-time/30)  # Polymer modification
+solubility_change = 1 - np.exp(-time/40)  # Final solubility change
+
+plt.figure(figsize=(12, 8))
+
+plt.subplot(2, 2, 1)
+plt.plot(time, photoacid_generator, 'r-', linewidth=2, label='PAG Concentration')
+plt.xlabel('Time (s)')
+plt.ylabel('Relative Concentration')
+plt.title('Photoacid Generator Consumption')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.subplot(2, 2, 2)
+plt.plot(time, acid_concentration, 'b-', linewidth=2, label='Acid Concentration')
+plt.xlabel('Time (s)')
+plt.ylabel('Relative Concentration')
+plt.title('Acid Generation')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.subplot(2, 2, 3)
+plt.plot(time, polymer_reaction, 'g-', linewidth=2, label='Polymer Reaction')
+plt.xlabel('Time (s)')
+plt.ylabel('Reaction Progress')
+plt.title('Polymer Modification')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.subplot(2, 2, 4)
+plt.plot(time, solubility_change, 'm-', linewidth=2, label='Solubility Change')
+plt.xlabel('Time (s)')
+plt.ylabel('Solubility Ratio')
+plt.title('Final Solubility Change')
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+```

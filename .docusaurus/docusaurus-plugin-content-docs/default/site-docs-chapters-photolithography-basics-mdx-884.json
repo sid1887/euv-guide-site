@@ -1,0 +1,27 @@
+{
+  "id": "chapters/photolithography-basics",
+  "title": "2 — Photolithography Basics (Analogy-Driven)",
+  "description": "Photolithography is like projecting a stencil onto photosensitive paint. A mask carries the pattern; optics image it onto photoresist on the wafer; development reveals the pattern; etch transfers it into materials.",
+  "source": "@site/docs/chapters/photolithography-basics.mdx",
+  "sourceDirName": "chapters",
+  "slug": "/chapters/photolithography-basics",
+  "permalink": "/docs/chapters/photolithography-basics",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "2 — Photolithography Basics (Analogy-Driven)",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "1 — Introduction: Why Microchips Matter",
+    "permalink": "/docs/chapters/intro"
+  },
+  "next": {
+    "title": "3 — Why EUV? The Rayleigh Criterion",
+    "permalink": "/docs/chapters/why-euv-rayleigh"
+  }
+}

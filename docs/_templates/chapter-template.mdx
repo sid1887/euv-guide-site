@@ -1,0 +1,84 @@
+---
+title: Chapter N
+sidebar_position: 3
+---
+
+import Plot from '@site/src/components/Plot';
+import AccessibleImage from '@site/src/components/AccessibleImage';
+import AnimatedBlock from '@site/src/components/AnimatedBlock';
+
+# Chapter Title
+
+<AnimatedBlock>
+Intro paragraph that explains what this chapter covers...
+</AnimatedBlock>
+
+## Section 1: Overview
+
+<AnimatedBlock>
+Content with proper semantic structure and accessibility...
+</AnimatedBlock>
+
+## Figure 1: Example Image
+
+<AccessibleImage 
+  src="/img/cover_euv.png" 
+  alt="Descriptive alt text explaining what the image shows" 
+  caption="Figure 1: Caption explaining the significance of this image"
+/>
+
+## Available Images in /img/
+
+You can use any of these existing images:
+- `/img/alignment_marks.png` - Alignment marks for layer registration
+- `/img/cover_euv.png` - EUV lithography cover image
+- `/img/energy_consumption_infographic.png` - Energy usage visualization
+- `/img/euv_light_source_real.png` - Real EUV light source
+- `/img/high_na_euv_render.png` - High-NA EUV system render
+- `/img/multilayer_mirror_sem.png` - SEM image of multilayer mirrors
+- `/img/photomask_closeup.png` - Close-up of photomask features
+- `/img/projection_optics_render.png` - Projection optics system
+- `/img/resist_ler_examples.png` - Line edge roughness examples
+- `/img/resist_molecules_micrograph.png` - Resist molecules at molecular level
+- `/img/throughput_chips_day_infographic.png` - Throughput metrics
+- `/img/twinscan_machine_photo.png` - EUV scanner machine
+- `/img/wafer_fab_bay_photo.png` - Fab cleanroom environment
+- `/img/wafer_layout_map.png` - Wafer die layout
+
+## Interactive Plot Example
+
+<Plot
+  data={[
+    {
+      x: [1, 2, 3, 4],
+      y: [2, 4, 6, 8],
+      type: 'scatter',
+      mode: 'lines+markers',
+      name: 'Example Data'
+    }
+  ]}
+  layout={{
+    title: 'Example Chart Title',
+    xaxis: { title: 'X Axis Label' },
+    yaxis: { title: 'Y Axis Label' }
+  }}
+  staticFallback="/img/static/example-chart.png"
+/>
+
+## Mathematical Expressions
+
+Here's an inline equation: $E = mc^2$
+
+And a block equation:
+
+$$
+\text{Resolution} = k_1 \frac{\lambda}{NA}
+$$
+
+## Key Takeaways
+
+<AnimatedBlock>
+- ✅ Key point 1
+- ✅ Key point 2  
+- ✅ Key point 3
+</AnimatedBlock>

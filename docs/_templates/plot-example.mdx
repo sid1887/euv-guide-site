@@ -1,0 +1,89 @@
+---
+title: Plot Example Template  
+---
+
+import Plot from '@site/src/components/Plot';
+
+# Interactive Plot Examples
+
+## Basic Scatter Plot
+
+<Plot
+  data={[
+    {
+      x: [1, 2, 3, 4, 5],
+      y: [1, 4, 2, 8, 5],
+      mode: 'markers',
+      type: 'scatter',
+      name: 'Sample Data',
+      marker: { color: 'rgb(219, 64, 82)', size: 12 }
+    }
+  ]}
+  layout={{
+    title: 'CD vs Exposure Dose',
+    xaxis: { title: 'Dose (mJ/cm²)' },
+    yaxis: { title: 'Critical Dimension (nm)' }
+  }}
+  staticFallback="/img/static/cd_vs_dose.png"
+/>
+
+## Multi-Series Line Plot
+
+<Plot
+  data={[
+    {
+      x: [13.3, 13.5, 13.7, 13.9, 14.1],
+      y: [22, 16, 12, 8, 5],
+      mode: 'lines+markers',
+      name: 'EUV (13.5nm)',
+      line: { color: 'rgb(55, 83, 109)' }
+    },
+    {
+      x: [193, 248, 365, 436],
+      y: [45, 65, 90, 130],
+      mode: 'lines+markers', 
+      name: 'DUV (193nm)',
+      line: { color: 'rgb(26, 118, 255)' }
+    }
+  ]}
+  layout={{
+    title: 'Resolution vs Wavelength',
+    xaxis: { title: 'Wavelength (nm)' },
+    yaxis: { title: 'Minimum Feature Size (nm)' }
+  }}
+  staticFallback="/img/static/resolution_vs_wavelength.png"
+/>
+
+## 3D Surface Plot
+
+<Plot
+  data={[
+    {
+      z: [[8.83,8.89,8.81,8.87,8.9,8.87],
+          [8.89,8.94,8.85,8.94,8.96,8.92],
+          [8.84,8.9,8.82,8.92,8.93,8.91],
+          [8.79,8.85,8.79,8.9,8.94,8.92],
+          [8.79,8.88,8.81,8.9,8.95,8.92],
+          [8.8,8.82,8.78,8.91,8.94,8.92],
+          [8.75,8.78,8.77,8.91,8.95,8.92],
+          [8.8,8.8,8.77,8.91,8.95,8.94],
+          [8.74,8.81,8.76,8.93,8.98,8.99],
+          [8.89,8.99,8.92,9.1,9.13,9.11],
+          [8.97,8.97,8.91,9.09,9.11,9.11],
+          [9.04,9.08,9.05,9.25,9.28,9.27],
+          [9,9.01,9,9.2,9.23,9.2],
+          [8.99,8.99,8.98,9.18,9.2,9.19],
+          [8.93,8.97,8.97,9.18,9.2,9.18]],
+      type: 'surface'
+    }
+  ]}
+  layout={{
+    title: 'Resist Thickness Uniformity',
+    scene: {
+      xaxis: { title: 'X Position (mm)' },
+      yaxis: { title: 'Y Position (mm)' },
+      zaxis: { title: 'Thickness (nm)' }
+    }
+  }}
+  staticFallback="/img/static/resist_uniformity_3d.png"
+/>

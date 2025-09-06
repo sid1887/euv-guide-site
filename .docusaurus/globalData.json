@@ -1,0 +1,63 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "chapters/intro",
+              "path": "/docs/chapters/intro",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapters/intro",
+              "path": "/docs/chapters/intro",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapters/photolithography-basics",
+              "path": "/docs/chapters/photolithography-basics",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapters/photolithography-basics",
+              "path": "/docs/chapters/photolithography-basics",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapters/why-euv-rayleigh",
+              "path": "/docs/chapters/why-euv-rayleigh",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapters/why-euv-rayleigh",
+              "path": "/docs/chapters/why-euv-rayleigh",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/docs/intro",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/docs/intro",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

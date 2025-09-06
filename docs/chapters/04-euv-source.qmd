@@ -1,0 +1,239 @@
+---
+title: "4 — EUV Light Source: Tin Droplets and Dual Laser Pulses"
+execute:
+  echo: false
+  warning: false
+---
+
+EUV lithography uses 13.5 nm radiation from a laser-produced plasma (LPP) in tin [@Banine2011]. Micron-sized tin droplets are hit by two CO₂ laser pulses: a pre-pulse shapes the droplet; a main pulse vaporizes it into a hot plasma emitting EUV radiation [@Wagner2010].
+
+The underlying plasma physics and efficiency limits of LPP sources for microlithography represent one of the most challenging engineering achievements in modern semiconductor manufacturing [@Banine2011; @Bakshi2006].
+
+::: {.callout-important}
+#### Data & Facts
+- Droplet: 20–30 μm; ~50,000 droplets/s  
+- Pre-pulse ~5 kW; Main pulse 25–30 kW  
+- Plasma temperature > 2.2×10⁵ °C  
+- Conversion efficiency ~3–5%  
+- Operates in high vacuum; hydrogen protects mirrors
+:::
+
+### Dual-Pulse Schematic
+```{mermaid}
+sequenceDiagram
+  participant D as Tin Droplet
+  participant P as Pre-pulse Laser
+  participant M as Main Laser
+  P->>D: Shape droplet (pancake)
+  M->>D: Vaporize to plasma (EUV emission)
+```
+
+### Heat Scale Comparison
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"values": [
+    {"item": "Steel furnace", "temp": 1500},
+    {"item": "Sun surface", "temp": 5500},
+    {"item": "Tin plasma (EUV)", "temp": 220000}
+  ]},
+  "mark": {"type": "bar", "cornerRadius": 3},
+  "encoding": {
+    "y": {"field": "item", "type": "nominal", "sort": "-x", "title": null},
+    "x": {"field": "temp", "type": "quantitative", "title": "Temperature (°C)"},
+    "color": {"field": "item", "type": "nominal"}
+  }
+}
+```
+
+![](../images/euv_light_source_real.png){#fig:euv-source fig-alt="EUV light source module with droplet generator and collector" fig-cap="EUV light source hardware. Tin droplets are hit by dual CO₂ laser pulses to create a hot plasma that emits at 13.5 nm." fig-credit="Courtesy: Supplier photo (placeholder)" width="90%"}
+
+:::{.callout-tip}
+### Takeaway
+EUV is man-made starlight: a tiny tin droplet becomes a plasma hotter than the Sun’s surface to emit 13.5 nm radiation.
+:::
+
+### Plasma Physics and Spectral Characteristics
+
+The tin plasma emits broadband EUV radiation centered around 13.5 nm, with line-rich spectra from highly charged tin ions [@Tallents2010]. The spectral purity and conversion efficiency are critical parameters that determine the overall system performance [@Stulen1999].
+
+```{python}
+#| label: euv-spectrum
+#| fig-cap: "EUV spectral emission from tin plasma showing the 13.5 nm peak"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate synthetic EUV spectrum data
+wavelength = np.linspace(10, 17, 1000)
+# Main 13.5 nm peak with satellite lines
+main_peak = 100 * np.exp(-((wavelength - 13.5)**2) / (2 * 0.3**2))
+satellite1 = 30 * np.exp(-((wavelength - 12.8)**2) / (2 * 0.2**2))
+satellite2 = 25 * np.exp(-((wavelength - 14.2)**2) / (2 * 0.25**2))
+background = 5 + 2 * np.random.random(len(wavelength))
+
+intensity = main_peak + satellite1 + satellite2 + background
+
+plt.figure(figsize=(10, 6))
+plt.plot(wavelength, intensity, 'b-', linewidth=2, label='Tin plasma emission')
+plt.axvline(x=13.5, color='r', linestyle='--', alpha=0.7, label='Target wavelength')
+plt.fill_between(wavelength, intensity, alpha=0.3)
+plt.xlabel('Wavelength (nm)')
+plt.ylabel('Relative Intensity')
+plt.title('EUV Spectral Emission from Tin Plasma')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+### Collector Mirror System
+
+A large collector mirror with multilayer coatings gathers and redirects EUV towards the illuminator [@Goldberg2004]. The collector design must balance:
+
+- **Collection efficiency** — Maximizing captured EUV radiation
+- **Debris mitigation** — Protecting mirror surfaces from tin contamination  
+- **Thermal management** — Handling intense heat loads
+- **Spectral filtering** — Selecting desired 13.5 nm radiation
+
+Hydrogen gas helps convert tin debris into volatile hydrides (SnH₄), protecting the collector from contamination [@Banine2011].
+
+### Advanced Droplet Generation and Timing
+
+The droplet generation system operates with extraordinary precision [@Bakshi2006]:
+
+```{python}
+#| label: droplet-timing
+#| fig-cap: "Timing diagram for EUV source operation showing critical synchronization"
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Time axis in microseconds
+time = np.linspace(0, 100, 1000)
+
+# Droplet trajectory (simplified)
+droplet_pos = 50 - 0.5 * time  # Moving towards interaction zone
+
+# Pre-pulse timing
+pre_pulse = np.zeros_like(time)
+pre_pulse[(time >= 20) & (time <= 25)] = 1
+
+# Main pulse timing  
+main_pulse = np.zeros_like(time)
+main_pulse[(time >= 30) & (time <= 32)] = 1
+
+# EUV emission (follows main pulse)
+euv_emission = np.zeros_like(time)
+euv_mask = (time >= 32) & (time <= 40)
+euv_emission[euv_mask] = np.exp(-(time[euv_mask] - 32) / 3)
+
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(12, 8), sharex=True)
+
+# Droplet position
+ax1.plot(time, droplet_pos, 'b-', linewidth=2)
+ax1.set_ylabel('Droplet Position\n(relative)')
+ax1.grid(True, alpha=0.3)
+ax1.set_title('EUV Source Timing Sequence')
+
+# Pre-pulse
+ax2.fill_between(time, pre_pulse, alpha=0.7, color='orange', label='Pre-pulse')
+ax2.set_ylabel('Pre-pulse\nPower')
+ax2.set_ylim(-0.1, 1.2)
+ax2.grid(True, alpha=0.3)
+
+# Main pulse
+ax3.fill_between(time, main_pulse, alpha=0.7, color='red', label='Main pulse')
+ax3.set_ylabel('Main Pulse\nPower')
+ax3.set_ylim(-0.1, 1.2)
+ax3.grid(True, alpha=0.3)
+
+# EUV emission
+ax4.fill_between(time, euv_emission, alpha=0.7, color='purple', label='EUV emission')
+ax4.set_ylabel('EUV Intensity')
+ax4.set_xlabel('Time (μs)')
+ax4.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Droplets (20–30 μm diameter) are emitted at ~50 kHz frequency. The pre-pulse laser must hit within microseconds to flatten the droplet into a pancake shape for maximum absorption; the main pulse follows to create the EUV-emitting plasma.
+
+### Power Scaling and Efficiency Challenges
+
+Current EUV sources achieve 3-5% conversion efficiency from laser power to useful EUV radiation [@Wagner2010]. Future high-volume manufacturing requires:
+
+```{python}
+#| label: power-scaling
+#| fig-cap: "EUV source power scaling requirements for future technology nodes"
+
+import plotly.graph_objects as go
+import pandas as pd
+
+# Power scaling data
+years = [2020, 2022, 2024, 2026, 2028, 2030]
+laser_power = [25, 30, 35, 45, 55, 70]  # kW
+euv_power = [p * 0.04 for p in laser_power]  # 4% efficiency
+throughput = [150, 170, 190, 220, 250, 300]  # WPH
+
+fig = go.Figure()
+
+# Laser power
+fig.add_trace(go.Scatter(
+    x=years, y=laser_power,
+    mode='lines+markers',
+    name='Laser Power (kW)',
+    line=dict(color='red', width=3),
+    marker=dict(size=8)
+))
+
+# EUV power (secondary axis)
+fig.add_trace(go.Scatter(
+    x=years, y=euv_power,
+    mode='lines+markers',
+    name='EUV Power (kW)',
+    line=dict(color='blue', width=3),
+    marker=dict(size=8),
+    yaxis='y2'
+))
+
+# Throughput (secondary axis)
+fig.add_trace(go.Scatter(
+    x=years, y=[t/100 for t in throughput],  # Scale for visibility
+    mode='lines+markers',
+    name='Throughput (×100 WPH)',
+    line=dict(color='green', width=3, dash='dash'),
+    marker=dict(size=8),
+    yaxis='y2'
+))
+
+fig.update_layout(
+    title='EUV Source Power Scaling Roadmap',
+    xaxis_title='Year',
+    yaxis=dict(title='Laser Power (kW)', side='left'),
+    yaxis2=dict(title='EUV Power (kW) / Throughput (×100 WPH)', side='right', overlaying='y'),
+    width=800,
+    height=500
+)
+
+fig.show()
+```
+
+Key challenges include:
+- **Thermal management** of high-power laser systems
+- **Debris mitigation** to protect optical components  
+- **Conversion efficiency** improvements beyond current 4-5%
+- **Reliability** for 24/7 manufacturing operations
+
+```{mermaid}
+gantt
+  dateFormat  X
+  title LPP timing (illustrative)
+  section Droplet
+  Eject droplet           :a1, 0, 10
+  section Pre-pulse
+  Shape droplet           :a2, 12, 2
+  section Main pulse
+  Vaporize to plasma      :a3, 15, 1
+```

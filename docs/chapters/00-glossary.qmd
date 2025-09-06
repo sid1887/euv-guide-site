@@ -1,0 +1,21 @@
+---
+title: "0 — Glossary"
+---
+
+This quick glossary helps with terms used throughout the book.
+
+- 📏 NA (Numerical Aperture): A measure of the cone of light the optics can accept. Higher NA → finer resolution.
+- 🟣 EUV (Extreme Ultraviolet): 13.5 nm wavelength light used for the smallest features.
+- 🔵 DUV (Deep Ultraviolet): 193 nm wavelength used widely in lithography.
+- 📐 CD (Critical Dimension): The targeted feature size to pattern on wafer.
+- 🧪 Photoresist: Light-sensitive polymer that changes solubility upon exposure.
+- 🪞 EUV Mask/Reticle: Reflective mask with multilayers and absorber patterns.
+- 🧲 TWINSCAN: Dual-stage architecture enabling parallel alignment and exposure.
+- ⚡ LPP (Laser-Produced Plasma): EUV light source using tin droplets and dual laser pulses.
+- 🎯 Overlay: Alignment accuracy between successive lithographic layers.
+- 🔁 Multiple Patterning: Printing sub-pitch features by combining multiple exposures/etches.
+- 🌱 Sustainability: Efforts to reduce power, heat, and environmental impact.
+
+:::{.callout-tip}
+Use this as a quick reference while you read—knowing NA, CD, overlay, and EUV/DUV will make the rest much easier.
+:::

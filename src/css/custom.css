@@ -1,0 +1,87 @@
+/* Design tokens */
+:root {
+  --accent: #2ea3ff;
+  --bg: #071021;
+  --text: #e6eef6;
+  --muted: #96a3b2;
+  --max-width: 900px;
+  --base-size: 18px;
+}
+
+/* Typography and base styles */
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: var(--base-size);
+  line-height: 1.6;
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem;
+  font-size: var(--base-size);
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 8px;
+  background: #111;
+  color: #fff;
+  padding: 8px 12px;
+  z-index: 9999;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: 8px;
+}
+
+/* Focus outline */
+:focus {
+  outline: 3px solid #2ea3ff;
+  outline-offset: 2px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Images */
+img {
+  border-radius: 8px;
+  transition: transform 0.2s;
+  max-width: 100%;
+  height: auto;
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+
+/* Figures */
+.figure {
+  margin: 2rem 0;
+}
+
+.figure figcaption {
+  font-size: 0.9em;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Plot loading */
+.plot-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+}

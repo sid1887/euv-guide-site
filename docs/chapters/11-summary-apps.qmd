@@ -1,0 +1,20 @@
+---
+title: "11 — Summary and Real-World Applications"
+---
+
+- Why chips matter: Everything digital rides on them.  
+- Why EUV: Shorter wavelength + higher NA = finer features.  
+- How it works: Tin plasma emits 13.5 nm; multilayer mirrors steer it; reflective masks carry patterns; precision stages align and expose; chemistry develops features.  
+- Where it’s going: High-NA EUV, better resists, greener tools, higher throughput.
+
+:::{.callout-tip}
+### Takeaway
+EUV is the cornerstone technology that keeps packing more transistors into chips — fueling AI, mobile, cloud, and beyond.
+:::
+
+### Quick pointers by chapter
+- 1–3: Motivation and Rayleigh — why we need EUV
+- 4–5: Sources and optics — how 13.5 nm is made and steered
+- 6–7: Masks and stages — patterns and precision motion
+- 8–9: Resists and process — chemistry and integration
+- 10: Future — High-NA, sustainability, and industry impact

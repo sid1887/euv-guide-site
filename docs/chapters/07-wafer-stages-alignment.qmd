@@ -1,0 +1,46 @@
+---
+title: "7 — Wafer Stages and Alignment (TWINSCAN)"
+---
+
+Modern scanners use a dual-stage architecture: one stage exposes while the other aligns and prepares the next wafer. Magnetic levitation, interferometry, and electrostatic chucks deliver sub-nanometer positioning.
+
+```{mermaid}
+flowchart LR
+  A[Stage A\nExposure] <--> B[Stage B\nAlignment/Metrology]
+  B --> C[Height map, focus/tilt, mark alignment]
+  A --> D[Exposure field scan]
+```
+
+![](../images/twinscan_machine_photo.png){#fig:twinscan fig-alt="ASML TWINSCAN scanner exterior" fig-cap="Dual-stage TWINSCAN architecture." fig-credit="Product photo (placeholder)" width="90%"}
+
+:::{.callout-tip}
+### Takeaway
+Parallelism boosts productivity: while one wafer is exposed, the next is measured and aligned.
+:::
+
+### Stage Mechanics and Metrology
+- Long-stroke stage: handles coarse motion over large distances
+- Short-stroke stage: fine positioning with nm accuracy over small ranges
+- Interferometers measure position with sub-nm resolution; environmental isolation reduces vibration
+
+### Electrostatic Chucks (ESC)
+ESCs clamp wafers with electric fields to avoid mechanical distortion; cooling channels manage thermal load and maintain flatness.
+
+### Overlay Budget (Illustrative)
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"values": [
+    {"source": "Stage", "nm": 1.0},
+    {"source": "Optics", "nm": 0.7},
+    {"source": "Wafer", "nm": 0.6},
+    {"source": "Mask", "nm": 0.5}
+  ]},
+  "mark": {"type": "bar", "cornerRadius": 2},
+  "encoding": {
+    "x": {"field": "source", "type": "nominal", "title": null},
+    "y": {"field": "nm", "type": "quantitative", "title": "Overlay contribution (nm)"},
+    "color": {"field": "source", "type": "nominal"}
+  }
+}
+```

@@ -1,0 +1,585 @@
+---
+title: "13 — Interactive Data Visualization & Analysis"
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+This chapter demonstrates advanced data visualization techniques for EUV lithography analysis using interactive plots, parameterized visualizations, and real-time data exploration.
+
+```{python}
+#| label: setup
+#| echo: false
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.express as px
+from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import optimize
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set up styling
+plt.style.use('seaborn-v0_8-darkgrid')
+sns.set_palette("husl")
+```
+
+## EUV Performance Metrics Dashboard
+
+### Throughput Analysis
+
+```{python}
+#| label: throughput-analysis
+#| fig-cap: "Interactive EUV throughput analysis across different operational parameters"
+
+# Generate synthetic but realistic EUV throughput data
+np.random.seed(42)
+
+# Parameters
+wafer_sizes = [200, 300]  # mm
+na_values = [0.33, 0.55]  # Numerical aperture
+power_levels = np.linspace(200, 400, 10)  # Source power (W)
+utilization_rates = np.linspace(0.7, 0.95, 8)  # Tool utilization
+
+# Create comprehensive dataset
+data = []
+for wafer_size in wafer_sizes:
+    for na in na_values:
+        for power in power_levels:
+            for util in utilization_rates:
+                # Realistic throughput model
+                base_throughput = 150 if na == 0.33 else 120  # WPH base
+                power_factor = (power / 300) ** 0.7
+                na_factor = 1.0 if na == 0.33 else 0.8  # High-NA penalty
+                wafer_factor = 1.0 if wafer_size == 300 else 0.7
+                
+                throughput = base_throughput * power_factor * na_factor * wafer_factor * util
+                
+                # Add realistic noise
+                throughput += np.random.normal(0, throughput * 0.05)
+                
+                data.append({
+                    'wafer_size': wafer_size,
+                    'numerical_aperture': na,
+                    'source_power': power,
+                    'utilization': util,
+                    'throughput_wph': max(0, throughput),
+                    'technology_node': '3nm' if na == 0.55 else '5nm'
+                })
+
+df_throughput = pd.DataFrame(data)
+
+# Create interactive 3D scatter plot
+fig = go.Figure()
+
+for tech_node in df_throughput['technology_node'].unique():
+    for wafer_size in df_throughput['wafer_size'].unique():
+        subset = df_throughput[
+            (df_throughput['technology_node'] == tech_node) & 
+            (df_throughput['wafer_size'] == wafer_size)
+        ]
+        
+        fig.add_trace(go.Scatter3d(
+            x=subset['source_power'],
+            y=subset['utilization'],
+            z=subset['throughput_wph'],
+            mode='markers',
+            marker=dict(
+                size=5,
+                opacity=0.7,
+                color=subset['numerical_aperture'],
+                colorscale='Viridis',
+                showscale=True,
+                colorbar=dict(title="Numerical Aperture")
+            ),
+            name=f'{tech_node} - {wafer_size}mm',
+            text=[f'NA: {na:.2f}<br>Power: {p:.0f}W<br>Util: {u:.1%}<br>TPT: {t:.0f} WPH' 
+                  for na, p, u, t in zip(subset['numerical_aperture'], 
+                                       subset['source_power'],
+                                       subset['utilization'], 
+                                       subset['throughput_wph'])],
+            hovertemplate='%{text}<extra></extra>'
+        ))
+
+fig.update_layout(
+    title='EUV Throughput Performance Space',
+    scene=dict(
+        xaxis_title='Source Power (W)',
+        yaxis_title='Tool Utilization',
+        zaxis_title='Throughput (WPH)',
+        camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))
+    ),
+    width=800,
+    height=600
+)
+
+fig.show()
+```
+
+### Resolution vs. Dose Analysis
+
+```{python}
+#| label: resolution-dose
+#| fig-cap: "Critical dimension uniformity as a function of dose and numerical aperture"
+
+# Generate resolution and dose data
+dose_range = np.linspace(15, 45, 50)  # mJ/cm²
+na_values = [0.33, 0.55]
+
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('CD Uniformity vs Dose', 'Line Edge Roughness', 
+                   'Depth of Focus', 'Process Window'),
+    specs=[[{"secondary_y": True}, {"secondary_y": True}],
+           [{"secondary_y": False}, {"type": "scatter"}]]
+)
+
+colors = ['#1f77b4', '#ff7f0e']
+
+for i, na in enumerate(na_values):
+    # CD uniformity model
+    cd_uniformity = 2.5 + 1.5 * np.exp(-(dose_range - 25)**2 / 50) + np.random.normal(0, 0.1, len(dose_range))
+    
+    # Line Edge Roughness model  
+    ler = 3.0 - 0.8 * np.log(dose_range / 20) + np.random.normal(0, 0.15, len(dose_range))
+    ler = np.maximum(ler, 1.0)  # Physical minimum
+    
+    # Depth of Focus
+    dof = 150 / na - dose_range * 0.5 + np.random.normal(0, 5, len(dose_range))
+    
+    fig.add_trace(
+        go.Scatter(x=dose_range, y=cd_uniformity, name=f'CD Uniformity (NA={na})',
+                  line=dict(color=colors[i]), legendgroup=f'na{na}'),
+        row=1, col=1
+    )
+    
+    fig.add_trace(
+        go.Scatter(x=dose_range, y=ler, name=f'LER (NA={na})',
+                  line=dict(color=colors[i], dash='dash'), legendgroup=f'na{na}',
+                  showlegend=False),
+        row=1, col=2
+    )
+    
+    fig.add_trace(
+        go.Scatter(x=dose_range, y=dof, name=f'DOF (NA={na})',
+                  line=dict(color=colors[i]), legendgroup=f'na{na}',
+                  showlegend=False),
+        row=2, col=1
+    )
+
+# Process window analysis
+dose_grid, focus_grid = np.meshgrid(np.linspace(20, 40, 20), np.linspace(-100, 100, 20))
+process_window = np.exp(-((dose_grid - 30)**2 / 100 + (focus_grid)**2 / 2000))
+
+fig.add_trace(
+    go.Contour(x=np.linspace(20, 40, 20), y=np.linspace(-100, 100, 20), 
+               z=process_window, colorscale='RdYlBu_r',
+               contours=dict(showlabels=True, labelfont=dict(size=10)),
+               name='Process Window'),
+    row=2, col=2
+)
+
+fig.update_xaxes(title_text="Dose (mJ/cm²)", row=1, col=1)
+fig.update_xaxes(title_text="Dose (mJ/cm²)", row=1, col=2)
+fig.update_xaxes(title_text="Dose (mJ/cm²)", row=2, col=1)
+fig.update_xaxes(title_text="Dose (mJ/cm²)", row=2, col=2)
+
+fig.update_yaxes(title_text="CD Uniformity (nm)", row=1, col=1)
+fig.update_yaxes(title_text="LER (nm)", row=1, col=2)
+fig.update_yaxes(title_text="DOF (nm)", row=2, col=1)
+fig.update_yaxes(title_text="Focus (nm)", row=2, col=2)
+
+fig.update_layout(height=800, title_text="EUV Process Characterization Dashboard")
+fig.show()
+```
+
+## Parameterized Cost Analysis
+
+```{python}
+#| label: cost-analysis
+#| fig-cap: "EUV cost of ownership analysis with interactive parameters"
+
+# Cost model parameters
+def calculate_euv_cost(tool_price_m=200, wafer_throughput=150, utilization=0.85, 
+                      wafer_price=8000, depreciation_years=7, maintenance_rate=0.12):
+    """
+    Calculate EUV cost per wafer with various parameters
+    """
+    annual_wafers = wafer_throughput * 24 * 365 * utilization
+    annual_depreciation = tool_price_m * 1e6 / depreciation_years
+    annual_maintenance = tool_price_m * 1e6 * maintenance_rate
+    annual_operating_cost = annual_depreciation + annual_maintenance
+    
+    cost_per_wafer = annual_operating_cost / annual_wafers
+    
+    return {
+        'annual_wafers': annual_wafers,
+        'cost_per_wafer': cost_per_wafer,
+        'annual_operating_cost': annual_operating_cost,
+        'payback_years': tool_price_m * 1e6 / (annual_wafers * wafer_price * 0.1)  # Assume 10% margin
+    }
+
+# Parameter sensitivity analysis
+throughput_range = np.linspace(100, 200, 20)
+utilization_range = np.linspace(0.7, 0.95, 20)
+
+# Create meshgrid for surface plot
+T, U = np.meshgrid(throughput_range, utilization_range)
+cost_surface = np.zeros_like(T)
+
+for i in range(len(utilization_range)):
+    for j in range(len(throughput_range)):
+        result = calculate_euv_cost(wafer_throughput=T[i,j], utilization=U[i,j])
+        cost_surface[i,j] = result['cost_per_wafer']
+
+# Create interactive surface plot
+fig = go.Figure(data=[go.Surface(
+    x=throughput_range,
+    y=utilization_range,
+    z=cost_surface,
+    colorscale='RdYlGn_r',
+    colorbar=dict(title="Cost per Wafer ($)")
+)])
+
+fig.update_layout(
+    title='EUV Cost per Wafer Sensitivity Analysis',
+    scene=dict(
+        xaxis_title='Throughput (WPH)',
+        yaxis_title='Tool Utilization',
+        zaxis_title='Cost per Wafer ($)',
+        camera=dict(eye=dict(x=1.2, y=1.2, z=1.2))
+    ),
+    width=800,
+    height=600
+)
+
+fig.show()
+```
+
+### Technology Roadmap Visualization
+
+```{python}
+#| label: technology-roadmap
+#| fig-cap: "EUV technology evolution and future projections"
+
+# Technology roadmap data
+years = np.array([2018, 2020, 2022, 2024, 2026, 2028, 2030])
+node_sizes = np.array([7, 5, 3, 2, 1.4, 1, 0.7])  # nm
+throughput = np.array([125, 140, 160, 180, 200, 220, 250])  # WPH
+na_values = np.array([0.33, 0.33, 0.33, 0.55, 0.55, 0.7, 0.7])
+power_levels = np.array([250, 300, 350, 400, 500, 600, 750])  # W
+
+# Create subplot figure
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('Technology Node Evolution', 'Throughput Progression',
+                   'Numerical Aperture Roadmap', 'Source Power Requirements'),
+    specs=[[{"secondary_y": True}, {"secondary_y": True}],
+           [{"secondary_y": False}, {"secondary_y": True}]]
+)
+
+# Technology node evolution
+fig.add_trace(
+    go.Scatter(x=years, y=node_sizes, mode='lines+markers',
+               name='Node Size', line=dict(color='#1f77b4', width=3),
+               marker=dict(size=8)),
+    row=1, col=1
+)
+
+# Add exponential fit
+def exponential_decay(x, a, b, c):
+    return a * np.exp(-b * (x - 2018)) + c
+
+popt, _ = optimize.curve_fit(exponential_decay, years, node_sizes, p0=[7, 0.1, 0.5])
+years_extended = np.linspace(2018, 2035, 100)
+fit_curve = exponential_decay(years_extended, *popt)
+
+fig.add_trace(
+    go.Scatter(x=years_extended, y=fit_curve, mode='lines',
+               name='Exponential Fit', line=dict(color='red', dash='dash')),
+    row=1, col=1
+)
+
+# Throughput progression
+fig.add_trace(
+    go.Scatter(x=years, y=throughput, mode='lines+markers',
+               name='Throughput', line=dict(color='#ff7f0e', width=3),
+               marker=dict(size=8)),
+    row=1, col=2
+)
+
+# NA roadmap
+fig.add_trace(
+    go.Scatter(x=years, y=na_values, mode='lines+markers+text',
+               name='Numerical Aperture', line=dict(color='#2ca02c', width=3),
+               marker=dict(size=10), text=[f'{na:.2f}' for na in na_values],
+               textposition='top center'),
+    row=2, col=1
+)
+
+# Power requirements
+fig.add_trace(
+    go.Scatter(x=years, y=power_levels, mode='lines+markers',
+               name='Source Power', line=dict(color='#d62728', width=3),
+               marker=dict(size=8)),
+    row=2, col=2
+)
+
+# Add cost projection on secondary axis
+cost_per_wafer = 1000 / throughput * (power_levels / 300) ** 0.5  # Simplified model
+fig.add_trace(
+    go.Scatter(x=years, y=cost_per_wafer, mode='lines+markers',
+               name='Cost per Wafer', line=dict(color='purple', dash='dot'),
+               marker=dict(size=6)),
+    row=2, col=2, secondary_y=True
+)
+
+# Update axes
+fig.update_xaxes(title_text="Year", row=1, col=1)
+fig.update_xaxes(title_text="Year", row=1, col=2)
+fig.update_xaxes(title_text="Year", row=2, col=1)
+fig.update_xaxes(title_text="Year", row=2, col=2)
+
+fig.update_yaxes(title_text="Node Size (nm)", row=1, col=1)
+fig.update_yaxes(title_text="Throughput (WPH)", row=1, col=2)
+fig.update_yaxes(title_text="Numerical Aperture", row=2, col=1)
+fig.update_yaxes(title_text="Source Power (W)", row=2, col=2)
+fig.update_yaxes(title_text="Cost per Wafer ($)", row=2, col=2, secondary_y=True)
+
+fig.update_layout(height=800, title_text="EUV Technology Roadmap (2018-2030)")
+fig.show()
+```
+
+## Advanced Statistical Analysis
+
+### Monte Carlo Simulation of EUV Process Variation
+
+```{python}
+#| label: monte-carlo
+#| fig-cap: "Monte Carlo simulation of EUV process variations and yield impact"
+
+def simulate_euv_process(n_simulations=10000):
+    """
+    Monte Carlo simulation of EUV process variations
+    """
+    np.random.seed(42)
+    
+    # Process parameters with realistic distributions
+    dose_variation = np.random.normal(0, 0.05, n_simulations)  # 5% dose variation
+    focus_variation = np.random.normal(0, 10, n_simulations)   # 10nm focus variation
+    mask_cd_variation = np.random.normal(0, 0.5, n_simulations)  # 0.5nm mask CD variation
+    
+    # Target CD and specifications
+    target_cd = 20  # nm
+    cd_tolerance = 2  # nm (±2nm)
+    
+    # Calculate actual CD using simplified model
+    cd_actual = (target_cd + 
+                dose_variation * target_cd + 
+                focus_variation * 0.1 + 
+                mask_cd_variation)
+    
+    # Calculate yield (percentage within specification)
+    within_spec = np.abs(cd_actual - target_cd) <= cd_tolerance
+    yield_rate = np.mean(within_spec) * 100
+    
+    return {
+        'cd_actual': cd_actual,
+        'within_spec': within_spec,
+        'yield_rate': yield_rate,
+        'dose_variation': dose_variation,
+        'focus_variation': focus_variation
+    }
+
+# Run simulation
+simulation_results = simulate_euv_process()
+
+# Create visualization
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('CD Distribution', 'Yield vs Process Parameters',
+                   'Process Parameter Correlations', 'Cumulative Yield'),
+    specs=[[{"secondary_y": False}, {"type": "scatter"}],
+           [{"type": "scatter"}, {"secondary_y": False}]]
+)
+
+# CD distribution histogram
+fig.add_trace(
+    go.Histogram(x=simulation_results['cd_actual'], nbinsx=50,
+                name='CD Distribution', opacity=0.7,
+                marker_color='lightblue'),
+    row=1, col=1
+)
+
+# Add specification limits
+target_cd = 20
+cd_tolerance = 2
+fig.add_vline(x=target_cd - cd_tolerance, line_dash="dash", line_color="red",
+              annotation_text="Lower Spec", row=1, col=1)
+fig.add_vline(x=target_cd + cd_tolerance, line_dash="dash", line_color="red",
+              annotation_text="Upper Spec", row=1, col=1)
+
+# Yield vs dose variation
+fig.add_trace(
+    go.Scatter(x=simulation_results['dose_variation'] * 100,
+               y=simulation_results['cd_actual'],
+               mode='markers', opacity=0.3,
+               marker=dict(color=simulation_results['within_spec'],
+                          colorscale='RdYlGn', size=3),
+               name='Dose Impact'),
+    row=1, col=2
+)
+
+# Focus vs CD correlation
+fig.add_trace(
+    go.Scatter(x=simulation_results['focus_variation'],
+               y=simulation_results['cd_actual'],
+               mode='markers', opacity=0.3,
+               marker=dict(color=simulation_results['within_spec'],
+                          colorscale='RdYlGn', size=3),
+               name='Focus Impact'),
+    row=2, col=1
+)
+
+# Cumulative yield curve
+sorted_cd = np.sort(simulation_results['cd_actual'])
+cumulative_yield = np.arange(1, len(sorted_cd) + 1) / len(sorted_cd) * 100
+
+fig.add_trace(
+    go.Scatter(x=sorted_cd, y=cumulative_yield,
+               mode='lines', name='Cumulative Yield',
+               line=dict(color='green', width=3)),
+    row=2, col=2
+)
+
+# Update axes
+fig.update_xaxes(title_text="CD (nm)", row=1, col=1)
+fig.update_xaxes(title_text="Dose Variation (%)", row=1, col=2)
+fig.update_xaxes(title_text="Focus Variation (nm)", row=2, col=1)
+fig.update_xaxes(title_text="CD (nm)", row=2, col=2)
+
+fig.update_yaxes(title_text="Frequency", row=1, col=1)
+fig.update_yaxes(title_text="CD (nm)", row=1, col=2)
+fig.update_yaxes(title_text="CD (nm)", row=2, col=1)
+fig.update_yaxes(title_text="Cumulative Yield (%)", row=2, col=2)
+
+fig.update_layout(height=800, 
+                 title_text=f"Monte Carlo Process Simulation (Yield: {simulation_results['yield_rate']:.1f}%)")
+fig.show()
+```
+
+## Interactive Parameter Explorer
+
+```{python}
+#| label: parameter-explorer
+#| fig-cap: "Interactive EUV parameter exploration tool"
+
+# Create interactive parameter exploration
+from ipywidgets import interact, FloatSlider, IntSlider
+import plotly.graph_objects as go
+
+def create_interactive_plot():
+    """
+    Create an interactive plot for exploring EUV parameters
+    """
+    
+    # Base parameters
+    base_throughput = 150
+    base_power = 300
+    base_na = 0.33
+    
+    # Parameter ranges
+    power_range = np.linspace(200, 500, 50)
+    na_range = np.linspace(0.25, 0.7, 50)
+    
+    # Create meshgrid
+    P, NA = np.meshgrid(power_range, na_range)
+    
+    # Throughput model
+    throughput = base_throughput * (P / base_power) ** 0.7 * (base_na / NA) ** 0.3
+    
+    # Resolution model (smaller is better)
+    resolution = 13.5 / (2 * NA) * 1000  # Convert to nm
+    
+    # Create surface plot
+    fig = go.Figure()
+    
+    # Add throughput surface
+    fig.add_trace(go.Surface(
+        x=power_range,
+        y=na_range,
+        z=throughput,
+        name='Throughput',
+        colorscale='Viridis',
+        opacity=0.8,
+        colorbar=dict(title="Throughput (WPH)", x=0.9)
+    ))
+    
+    # Add resolution contours
+    fig.add_trace(go.Contour(
+        x=power_range,
+        y=na_range,
+        z=resolution,
+        name='Resolution',
+        colorscale='Reds',
+        opacity=0.6,
+        contours=dict(
+            showlabels=True, 
+            labelfont=dict(size=10, color='white')
+        ),
+        colorbar=dict(title="Resolution (nm)", x=1.1)
+    ))
+    
+    fig.update_layout(
+        title='EUV Performance Trade-offs: Throughput vs Resolution',
+        scene=dict(
+            xaxis_title='Source Power (W)',
+            yaxis_title='Numerical Aperture',
+            zaxis_title='Throughput (WPH)',
+            camera=dict(
+                eye=dict(x=1.5, y=1.5, z=1.5)
+            )
+        ),
+        width=900,
+        height=700
+    )
+    
+    return fig
+
+# Display the interactive plot
+interactive_fig = create_interactive_plot()
+interactive_fig.show()
+```
+
+:::{.callout-tip}
+### Interactive Features
+The visualizations in this chapter include:
+- **3D scatter plots** with hover information
+- **Parameter sensitivity surfaces** showing cost and performance trade-offs
+- **Monte Carlo simulations** for process variation analysis
+- **Technology roadmaps** with predictive modeling
+- **Real-time parameter exploration** tools
+
+These tools help engineers and researchers understand the complex relationships between EUV system parameters and performance metrics.
+:::
+
+## Summary
+
+This chapter demonstrates how advanced data visualization and interactive analysis can provide deep insights into EUV lithography systems. The combination of:
+
+1. **Multi-dimensional parameter spaces** for optimization
+2. **Statistical modeling** for process control
+3. **Predictive analytics** for technology roadmapping
+4. **Interactive exploration** for parameter sensitivity analysis
+
+These tools are essential for:
+- Process optimization and control
+- Technology development planning  
+- Cost-benefit analysis
+- Risk assessment and mitigation
+- Performance benchmarking
+
+The interactive nature of these visualizations allows for real-time exploration of the complex trade-offs inherent in EUV lithography systems.

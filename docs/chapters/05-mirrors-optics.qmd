@@ -1,0 +1,47 @@
+---
+title: "5 — Multilayer Mirrors and Projection Optics"
+---
+
+Glass absorbs EUV, so optics are reflective multilayer mirrors (Mo/Si) tuned to 13.5 nm. Peak reflectivity is ~70% per mirror, so EUV needs a very bright source to compensate for multiple bounces.
+
+### Multilayer Bragg Reflector (Cartoon)
+```{mermaid}
+flowchart LR
+  subgraph Mirror[Mo/Si Multilayer]
+    A[Mo layer]:::mo --- B[Si layer]:::si --- C[Mo layer]:::mo --- D[Si layer]:::si
+  end
+  style Mirror fill:#f8f9ff,stroke:#6C63FF
+  classDef mo fill:#cfd8dc,stroke:#546e7a;
+  classDef si fill:#eceff1,stroke:#78909c;
+```
+
+![](../images/multilayer_mirror_sem.png){#fig:ml-sem fig-alt="SEM of Mo/Si multilayer cross-section" fig-cap="Cross-section of a Mo/Si multilayer mirror used for EUV." fig-credit="Placeholder SEM" width="80%"}
+
+### NA Comparison (EUV vs High-NA)
+```{mermaid}
+flowchart LR
+  E[NA 0.33\n(standard EUV)] -->|smaller cone| R[Resolution]
+  H[NA 0.55\n(High-NA EUV)] -->|larger cone| R
+```
+
+:::: {.columns}
+::: {.column}
+![](../images/projection_optics_render.png){#fig:proj-opt fig-alt="Projection optics module schematic" fig-cap="Projection optics (schematic)." fig-credit="Illustration (placeholder)"}
+:::
+::: {.column}
+![](../images/high_na_euv_render.png){#fig:high-na fig-alt="High-NA EUV optics concept" fig-cap="High-NA EUV optics concept (NA 0.55)." fig-credit="Illustration (placeholder)"}
+:::
+::::
+
+:::{.callout-tip}
+### Takeaway
+Higher NA captures larger angles of light for better resolution, but requires bigger optics, smaller fields, and tougher engineering.
+:::
+
+### Multilayer Manufacturing
+Mo/Si stacks are grown by sputtering with sub-nanometer precision. Interface roughness and interdiffusion must be minimized to keep high reflectivity. Ru capping layers protect the stack; thermal stability is critical during operation.
+
+### High-NA Anamorphic Imaging
+To achieve NA 0.55, High-NA optics often use different magnifications in X and Y (e.g., 4× and 8×), shrinking field size in one dimension to maintain image quality while accommodating the larger cone of rays.
+
+See @fig-proj-opt for the projection optics and @fig-high-na for a High-NA concept rendering. The multilayer stack in @fig-ml-sem highlights the periodic Mo/Si structure that makes EUV reflection possible.

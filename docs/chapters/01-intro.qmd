@@ -1,0 +1,74 @@
+---
+title: "1 — Introduction: Why Microchips Matter"
+---
+
+Microchips power phones, laptops, AI accelerators, cars, and cloud servers. Each advanced chip hosts billions of transistors wired together in nanoscale patterns.
+
+:::{.callout-note}
+### Definition: Lithography
+Lithography transfers a designed pattern (on a photomask/reticle) onto a wafer coated with a light-sensitive film (photoresist). Development and etch turn that pattern into real structures in silicon and metals.
+:::
+
+:::{.callout-tip}
+### Thought Experiment
+If you scaled the tiny chip features up to readable text, a modern GPU could “fit” the equivalent of entire book collections — from the Harry Potter series to the English Wikipedia — etched with atomic-level precision.
+:::
+
+### Why EUV?
+To keep shrinking features, we need shorter wavelengths and better optics. EUV uses 13.5 nm light — far shorter than conventional deep ultraviolet (DUV) at 193 nm — enabling much finer features.
+
+### What’s inside a modern chip?
+At a high level, chips integrate three big things:
+
+- Transistor layers: billions of tiny switches that compute
+- Interconnect layers: thin metal wires that connect switches
+- Power and I/O layers: routes that bring power in and signals out
+
+```{vega-lite}
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"values": [
+    {"block": "Transistors", "share": 55},
+    {"block": "Lower interconnect", "share": 25},
+    {"block": "Upper interconnect & I/O", "share": 20}
+  ]},
+  "mark": "arc",
+  "encoding": {
+    "theta": {"field": "share", "type": "quantitative"},
+    "color": {"field": "block", "type": "nominal"}
+  },
+  "view": {"stroke": null}
+}
+```
+
+::: {.column-page}
+:::: {.columns}
+::: {.column}
+![](../images/wafer_fab_bay_photo.png){#fig:fab-bay fig-alt="EUV tools in a 300 mm cleanroom bay" fig-cap="EUV tools installed in a modern 300 mm fab bay." fig-credit="Courtesy: Manufacturer/ASML (placeholder)" width="100%"}
+:::
+::: {.column}
+```{mermaid}
+flowchart TB
+  A[Digital life needs]\n  --> B[Microchips with billions of transistors]
+  B --> C[EUV lithography at 13.5 nm]
+  C --> D[Smaller, faster, more efficient]
+```
+:::
+::::
+:::
+
+:::{.callout-tip}
+### Takeaway
+EUV lithography is a key enabler of the chips that drive AI, mobile, and cloud.
+:::
+
+### Quick Q&A
+<details>
+<summary>Why not keep using 193 nm DUV for everything?</summary>
+It becomes increasingly hard to pattern ever-smaller features with longer wavelengths. You can use tricks (multiple patterning), but complexity and cost rise rapidly. EUV at 13.5 nm makes the smallest features more straightforward.
+</details>
+
+<details>
+<summary>Why are transistors so small?</summary>
+Smaller devices switch faster and use less energy, enabling higher performance and lower power. But they demand extreme precision in manufacturing.
+</details>

@@ -1,0 +1,27 @@
+{
+  "id": "chapters/why-euv-rayleigh",
+  "title": "3 — Why EUV? The Rayleigh Criterion",
+  "description": "The fundamental physics of light limits how small features we can print. The Rayleigh criterion tells us the minimum feature size achievable with optical lithography.",
+  "source": "@site/docs/chapters/why-euv-rayleigh.mdx",
+  "sourceDirName": "chapters",
+  "slug": "/chapters/why-euv-rayleigh",
+  "permalink": "/docs/chapters/why-euv-rayleigh",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "3 — Why EUV? The Rayleigh Criterion",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "2 — Photolithography Basics (Analogy-Driven)",
+    "permalink": "/docs/chapters/photolithography-basics"
+  },
+  "next": {
+    "title": "1 — Introduction: Why Microchips Matter",
+    "permalink": "/docs/chapters/intro"
+  }
+}
