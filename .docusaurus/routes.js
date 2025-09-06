@@ -38,6 +38,11 @@ export default [
     exact: true
   },
   {
+    path: '/index_new',
+    component: ComponentCreator('/index_new', 'f89'),
+    exact: true
+  },
+  {
     path: '/search',
     component: ComponentCreator('/search', '822'),
     exact: true

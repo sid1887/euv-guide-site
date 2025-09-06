@@ -23,30 +23,71 @@ export default function CommandPalette() {
     {
       id: 'goto-intro',
       title: 'Go to Introduction',
-      description: 'Learn the basics of EUV lithography',
+      description: 'Learn about the document analysis platform',
       icon: '📚',
       action: () => window.location.href = '/docs/intro',
-      keywords: ['intro', 'introduction', 'basics', 'start']
+      keywords: ['intro', 'introduction', 'basics', 'start', 'getting started']
     },
     {
-      id: 'goto-rayleigh',
-      title: 'Why EUV? Rayleigh Criterion',
-      description: 'Understand the physics behind EUV advantage',
-      icon: '⚡',
-      action: () => window.location.href = '/docs/chapters/why-euv-rayleigh',
-      keywords: ['physics', 'rayleigh', 'resolution', 'wavelength']
+      id: 'upload-document',
+      title: 'Upload Document',
+      description: 'Process a new document with AI analysis',
+      icon: '📄',
+      action: () => {
+        // Trigger file upload dialog
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.pdf,.docx,.txt,.md';
+        input.click();
+      },
+      keywords: ['upload', 'file', 'document', 'pdf', 'docx', 'analyze']
     },
     {
       id: 'search-content',
-      title: 'Search All Content',
-      description: 'Full-text search across all chapters',
+      title: 'Search Documents',
+      description: 'Semantic search across processed documents',
       icon: '🔍',
       action: () => {
-        // Trigger Docusaurus search
+        // Trigger search functionality
         const searchButton = document.querySelector('[aria-label*="Search"]');
         (searchButton as HTMLElement)?.click();
       },
-      keywords: ['search', 'find', 'content']
+      keywords: ['search', 'find', 'content', 'semantic', 'documents']
+    },
+    {
+      id: 'knowledge-graph',
+      title: 'Open Knowledge Graph',
+      description: 'Explore concepts and relationships',
+      icon: '🕸️',
+      action: () => window.location.href = '/knowledge-graph',
+      keywords: ['knowledge', 'graph', 'relationships', 'concepts', 'network']
+    },
+    {
+      id: 'create-visualization',
+      title: 'Create Visualization',
+      description: 'Generate AI-powered charts and graphs',
+      icon: '📊',
+      action: () => window.location.href = '/visualizations',
+      keywords: ['visualization', 'chart', 'graph', 'plot', 'ai', 'generate']
+    },
+    {
+      id: 'ai-assistant',
+      title: 'Ask AI Assistant',
+      description: 'Get contextual help from the background AI',
+      icon: '🤖',
+      action: () => {
+        // Show AI assistant modal
+        console.log('AI Assistant activated via command palette');
+      },
+      keywords: ['ai', 'assistant', 'help', 'chat', 'question']
+    },
+    {
+      id: 'export-session',
+      title: 'Export Analysis Session',
+      description: 'Download your analysis as PDF, JSON, or HTML',
+      icon: '💾',
+      action: () => window.location.href = '/export',
+      keywords: ['export', 'download', 'save', 'pdf', 'json', 'html']
     },
     {
       id: 'toggle-theme',
@@ -57,26 +98,18 @@ export default function CommandPalette() {
         const themeToggle = document.querySelector('[aria-label*="theme"]');
         (themeToggle as HTMLElement)?.click();
       },
-      keywords: ['theme', 'dark', 'light', 'mode']
+      keywords: ['theme', 'dark', 'light', 'mode', 'appearance']
     },
     {
-      id: 'ai-assistant',
-      title: 'Open AI Assistant',
-      description: 'Get help from the EUV learning assistant',
-      icon: '🤖',
+      id: 'performance-dashboard',
+      title: 'Performance Dashboard',
+      description: 'View real-time performance metrics',
+      icon: '�',
       action: () => {
-        const aiButton = document.querySelector('.ai-assistant-trigger');
-        (aiButton as HTMLElement)?.click();
+        const perfButton = document.querySelector('.performance-trigger');
+        (perfButton as HTMLElement)?.click();
       },
-      keywords: ['ai', 'assistant', 'help', 'chat']
-    },
-    {
-      id: 'print-page',
-      title: 'Print Current Page',
-      description: 'Print-optimized version of current page',
-      icon: '🖨️',
-      action: () => window.print(),
-      keywords: ['print', 'pdf', 'export']
+      keywords: ['performance', 'metrics', 'dashboard', 'vitals', 'speed']
     },
     {
       id: 'report-issue',
@@ -84,7 +117,7 @@ export default function CommandPalette() {
       description: 'Report a bug or suggest improvement',
       icon: '🐛',
       action: () => window.open('https://github.com/sid1887/euv-guide-site/issues', '_blank'),
-      keywords: ['bug', 'issue', 'report', 'feedback']
+      keywords: ['bug', 'issue', 'report', 'feedback', 'help']
     }
   ], []);
 

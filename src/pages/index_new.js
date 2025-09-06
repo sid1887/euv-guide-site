@@ -5,7 +5,6 @@ import SkipLink from '@site/src/components/SkipLink';
 import AnimatedBlock from '@site/src/components/AnimatedBlock';
 import CommandPalette from '@site/src/components/CommandPalette';
 import PerformanceDashboard from '@site/src/components/PerformanceDashboard';
-import DocumentAnalysisApp from '@site/src/components/DocumentAnalysisApp';
 
 export default function Home() {
   return (
@@ -189,11 +188,6 @@ export default function Home() {
                 Explore the Technology 🔬
               </a>
             </div>
-          </div>
-          
-          {/* Document Analysis Application */}
-          <div style={{ marginTop: '4rem' }}>
-            <DocumentAnalysisApp />
           </div>
         </AnimatedBlock>
       </main>

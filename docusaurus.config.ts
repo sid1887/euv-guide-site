@@ -1,6 +1,7 @@
 import { Config } from '@docusaurus/types';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import webpack from 'webpack';
 
 const config: Config = {
   title: 'EUV Lithography Guide',
@@ -57,7 +58,42 @@ const config: Config = {
         { tagName: 'meta', name: 'theme-color', content: '#071021' },
         { tagName: 'link', rel: 'manifest', href: '/manifest.json' },
       ],
-    }]
+    }],
+    // Custom webpack configuration
+    () => ({
+      name: 'webpack-config',
+      configureWebpack(config: any, isServer: boolean) {
+        if (!isServer) {
+          config.resolve = config.resolve || {};
+          config.resolve.fallback = {
+            ...config.resolve.fallback,
+            "fs": false,
+            "path": require.resolve("path-browserify"),
+            "os": require.resolve("os-browserify/browser"),
+            "crypto": require.resolve("crypto-browserify"),
+            "stream": require.resolve("stream-browserify"),
+            "http": require.resolve("stream-http"),
+            "https": require.resolve("https-browserify"),
+            "url": require.resolve("url/"),
+            "util": require.resolve("util/"),
+            "zlib": require.resolve("browserify-zlib"),
+            "assert": require.resolve("assert"),
+            "net": false,
+            "tls": false,
+            "dns": false
+          };
+
+          config.plugins = config.plugins || [];
+          config.plugins.push(
+            new webpack.ProvidePlugin({
+              Buffer: ['buffer', 'Buffer'],
+              process: 'process/browser',
+            })
+          );
+        }
+        return config;
+      },
+    }),
   ],
   
   // Stylesheets for KaTeX and fonts

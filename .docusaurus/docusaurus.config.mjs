@@ -123,7 +123,8 @@ export default {
           }
         ]
       }
-    ]
+    ],
+    null
   ],
   "stylesheets": [
     {

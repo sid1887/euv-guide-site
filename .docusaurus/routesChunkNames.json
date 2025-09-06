@@ -42,6 +42,13 @@
       "plugin": "plugin---docusaurus-debugb-38-ad3"
     }
   },
+  "/index_new-f89": {
+    "__comp": "__comp---site-src-pages-index-new-jsa-0-e-4b0",
+    "__context": {
+      "plugin": "plugin---index-newa-74-afa"
+    },
+    "config": "config---index-new-5-e-9-508"
+  },
   "/search-822": {
     "__comp": "__comp---theme-search-page-1-a-4-d6f",
     "__context": {
@@ -80,8 +87,8 @@
   "/-2e1": {
     "__comp": "__comp---site-src-pages-index-jsc-4-f-f99",
     "__context": {
-      "plugin": "plugin---a-74-9d6"
+      "plugin": "plugin---index-newa-74-afa"
     },
-    "config": "config---5-e-9-4f3"
+    "config": "config---index-new-5-e-9-508"
   }
 }
